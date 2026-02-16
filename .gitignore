@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# AI tool directories
+.agent
+.goose
+.roo
+.windsurf
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

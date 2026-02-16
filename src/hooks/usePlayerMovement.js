@@ -8,6 +8,8 @@ const WALK_SPEED = 3
 const RUN_SPEED = 5
 const MAX_PITCH = THREE.MathUtils.degToRad(80)
 const EYE_HEIGHT = 1.6
+const HEAD_BOB_FREQ = 10
+const HEAD_BOB_AMP = 0.03
 
 function intersectsAABB(x, z, radius, aabb) {
   return (
@@ -31,6 +33,7 @@ export default function usePlayerMovement({ camera, keysRef, mouseDeltaRef, isLo
   const positionRef = useRef(new THREE.Vector3(0, EYE_HEIGHT, LOBBY_SIZE.depth / 2 - 2))
   const rotationRef = useRef({ yaw: 0, pitch: 0 })
   const movementStateRef = useRef({ isMoving: false, currentRoom: 'LOBBY' })
+  const headBobRef = useRef({ timer: 0, offset: 0 })
 
   const basis = useMemo(
     () => ({
@@ -87,13 +90,21 @@ export default function usePlayerMovement({ camera, keysRef, mouseDeltaRef, isLo
 
     movementStateRef.current.isMoving = isMoving
 
+    if (isMoving) {
+      headBobRef.current.timer += delta * HEAD_BOB_FREQ
+      headBobRef.current.offset = Math.sin(headBobRef.current.timer) * HEAD_BOB_AMP
+    } else {
+      headBobRef.current.timer = 0
+      headBobRef.current.offset *= 0.85
+    }
+
     const nextRoom = getRoomName(positionRef.current.x, positionRef.current.z)
     if (nextRoom !== movementStateRef.current.currentRoom) {
       movementStateRef.current.currentRoom = nextRoom
       onRoomChange?.(nextRoom)
     }
 
-    positionRef.current.y = EYE_HEIGHT
+    positionRef.current.y = EYE_HEIGHT + headBobRef.current.offset
 
     camera.position.copy(positionRef.current)
     camera.rotation.set(rotationRef.current.pitch, rotationRef.current.yaw, 0, 'YXZ')
