@@ -19,6 +19,15 @@ export default function PlayerController({ onPointerLockChange, onRoomChange }) 
   })
 
   useEffect(() => {
+    const handleReset = () => {
+      camera.position.set(0, 1.6, 5)
+      camera.rotation.set(0, 0, 0)
+    }
+    window.addEventListener('resetPlayerPosition', handleReset)
+    return () => window.removeEventListener('resetPlayerPosition', handleReset)
+  }, [camera])
+
+  useEffect(() => {
     const onPointerLockChangeInternal = () => {
       const locked = document.pointerLockElement === document.body
       setIsLocked(locked)

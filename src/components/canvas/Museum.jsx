@@ -5,12 +5,12 @@ import SkillsRoom, { SKILLS } from './rooms/SkillsRoom'
 import PortalRoom, { PORTAL } from './rooms/PortalRoom'
 import Door from './objects/Door'
 
-export default function Museum() {
+export default function Museum({ onSelectProject }) {
   return (
     <group>
       {/* Rooms */}
       <Lobby />
-      <GalleryRoom />
+      <GalleryRoom onSelectProject={onSelectProject} />
       <AboutRoom />
       <SkillsRoom />
       <PortalRoom />
