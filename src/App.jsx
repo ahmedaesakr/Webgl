@@ -12,6 +12,7 @@ function App() {
   const [pointerLocked, setPointerLocked] = useState(false)
   const [currentRoom, setCurrentRoom] = useState('LOBBY')
   const [selectedProject, setSelectedProject] = useState(null)
+  const [hoveredObject, setHoveredObject] = useState(null)
   const [showPause, setShowPause] = useState(false)
   const hasEnteredRef = useRef(false)
 
@@ -68,15 +69,16 @@ function App() {
             onPointerLockChange={handlePointerLockChange}
             onRoomChange={setCurrentRoom}
             onSelectProject={handleSelectProject}
+            onHover={setHoveredObject}
           />
         </Suspense>
       </Canvas>
 
-      {/* <Loader /> */}
+      <Loader />
 
       <div className="ui-overlay">
         <HUD pointerLocked={pointerLocked} currentRoom={currentRoom} />
-        <InteractionPrompt visible={false} text="Press E to view" />
+        <InteractionPrompt visible={!!hoveredObject} text={hoveredObject ? `Press E to view ${hoveredObject}` : ''} />
       </div>
 
       {selectedProject && (

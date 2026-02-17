@@ -5,7 +5,7 @@ import Effects from './Effects'
 import { AdaptiveDpr, AdaptiveEvents, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 
-export default function Experience({ onPointerLockChange, onRoomChange, onSelectProject }) {
+export default function Experience({ onPointerLockChange, onRoomChange, onSelectProject, onHover }) {
   return (
     <>
       <color attach="background" args={['#101015']} />
@@ -21,8 +21,8 @@ export default function Experience({ onPointerLockChange, onRoomChange, onSelect
       />
       <PlayerController onPointerLockChange={onPointerLockChange} onRoomChange={onRoomChange} />
       <Particles />
-      <Museum onSelectProject={onSelectProject} />
-      {/* <Effects /> */}
+      <Museum onSelectProject={onSelectProject} onHover={onHover} />
+      <Effects />
       <AdaptiveDpr pixelated />
       <AdaptiveEvents />
     </>

@@ -19,7 +19,7 @@ const FRAME_Z = [-8, 0, 8]
 const LEFT_WALL_X = GALLERY.x - GALLERY.width / 2 + 0.16
 const RIGHT_WALL_X = GALLERY.x + GALLERY.width / 2 - 0.16
 
-export default function GalleryRoom({ onSelectProject }) {
+export default function GalleryRoom({ onSelectProject, onHover }) {
   return (
     <>
       <RoomShell
@@ -40,6 +40,7 @@ export default function GalleryRoom({ onSelectProject }) {
           position={[LEFT_WALL_X, 2.2, z]}
           rotation={[0, Math.PI / 2, 0]}
           onClick={onSelectProject}
+          onHover={onHover}
         />
       ))}
       {/* Right wall frames (facing left into room) */}
@@ -50,6 +51,7 @@ export default function GalleryRoom({ onSelectProject }) {
           position={[RIGHT_WALL_X, 2.2, z]}
           rotation={[0, -Math.PI / 2, 0]}
           onClick={onSelectProject}
+          onHover={onHover}
         />
       ))}
       {/* Left wall spotlights */}

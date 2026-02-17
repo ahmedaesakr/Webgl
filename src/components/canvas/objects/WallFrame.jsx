@@ -8,10 +8,23 @@ const FRAME_HEIGHT = 2
 const FRAME_BORDER = 0.12
 const FRAME_DEPTH = 0.08
 
-export default function WallFrame({ project, position, rotation, onClick }) {
+export default function WallFrame({ project, position, rotation, onClick, onHover }) {
   const [hovered, setHovered] = useState(false)
   const canvasRef = useRef()
   const glowRef = useRef(0)
+
+  const handlePointerOver = (e) => {
+    e.stopPropagation()
+    setHovered(true)
+    onHover?.(project.title)
+    document.body.style.cursor = 'pointer'
+  }
+
+  const handlePointerOut = () => {
+    setHovered(false)
+    onHover?.(null)
+    document.body.style.cursor = 'auto'
+  }
 
   useFrame(() => {
     const target = hovered ? 0.4 : 0.05
@@ -47,8 +60,8 @@ export default function WallFrame({ project, position, rotation, onClick }) {
       {/* Canvas — interactive */}
       <mesh
         position={[0, 0, -0.01]}
-        onPointerOver={(e) => { e.stopPropagation(); setHovered(true) }}
-        onPointerOut={() => setHovered(false)}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
         onClick={(e) => { e.stopPropagation(); onClick?.(project) }}
       >
         <planeGeometry args={[FRAME_WIDTH, FRAME_HEIGHT]} />

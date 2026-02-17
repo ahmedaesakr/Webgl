@@ -6,10 +6,21 @@ import { lerp } from '@/utils/helpers'
 const BASE_RADIUS = 0.35
 const BASE_HEIGHT = 0.8
 
-export default function Pedestal({ skill, position }) {
+export default function Pedestal({ skill, position, onHover }) {
   const [hovered, setHovered] = useState(false)
   const orbRef = useRef()
   const glowRef = useRef(0)
+
+  const handlePointerOver = (e) => {
+    e.stopPropagation()
+    setHovered(true)
+    onHover?.(skill.name)
+  }
+
+  const handlePointerOut = () => {
+    setHovered(false)
+    onHover?.(null)
+  }
 
   const orbSize = 0.15 + (skill.level / 100) * 0.2
 
@@ -47,8 +58,8 @@ export default function Pedestal({ skill, position }) {
       <Float speed={2} rotationIntensity={0.3} floatIntensity={0.4}>
         <mesh
           position={[0, BASE_HEIGHT + 0.5, 0]}
-          onPointerOver={(e) => { e.stopPropagation(); setHovered(true) }}
-          onPointerOut={() => setHovered(false)}
+          onPointerOver={handlePointerOver}
+          onPointerOut={handlePointerOut}
         >
           <sphereGeometry args={[orbSize, 32, 32]} />
           <meshPhysicalMaterial

@@ -12,6 +12,14 @@ export default function Loader() {
     }
   }, [active, progress])
 
+  // Safety timeout: force hide after 8 seconds
+  useEffect(() => {
+    const safetyTimer = setTimeout(() => {
+      if (visible) setVisible(false)
+    }, 8000)
+    return () => clearTimeout(safetyTimer)
+  }, [visible])
+
   if (!visible) return null
 
   return (

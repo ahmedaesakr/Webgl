@@ -17,7 +17,7 @@ export const SKILLS = {
   z: LOBBY.z - LOBBY.depth / 2 - 12 / 2,
 }
 
-export default function SkillsRoom() {
+export default function SkillsRoom({ onHover }) {
   const pedestalSkills = skills.slice(0, 8)
 
   return (
@@ -59,6 +59,7 @@ export default function SkillsRoom() {
             key={skill.id}
             skill={skill}
             position={[x, 0, z]}
+            onHover={onHover}
           />
         )
       })}
