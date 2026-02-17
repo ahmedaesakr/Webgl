@@ -1,4 +1,6 @@
-import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
+import { EffectComposer, Bloom, Vignette, Noise, ChromaticAberration, ToneMapping } from '@react-three/postprocessing'
+import { ToneMappingMode } from 'postprocessing'
+import { Vector2 } from 'three'
 
 export default function Effects() {
   return (
@@ -10,6 +12,9 @@ export default function Effects() {
         mipmapBlur
       />
       <Vignette offset={0.3} darkness={0.7} />
+      <Noise opacity={0.025} />
+      <ChromaticAberration offset={new Vector2(0.0005, 0.0005)} />
+      <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
     </EffectComposer>
   )
 }

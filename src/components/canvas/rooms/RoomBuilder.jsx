@@ -12,7 +12,7 @@ export { WALL_THICKNESS }
  * `axis` is 'x' (wall runs along X) or 'z' (wall runs along Z).
  * `gaps` is an array of { start, end } in the wall's length axis, where door openings go.
  */
-function WallWithGaps({ axis, length, height, fixedPos, gaps = [], wallThickness = WALL_THICKNESS }) {
+function WallWithGaps({ axis, length, height, fixedPos, gaps = [], wallThickness = WALL_THICKNESS, wallMaterialProps = {} }) {
   const segments = useMemo(() => {
     if (gaps.length === 0) return [{ start: -length / 2, end: length / 2 }]
 
@@ -52,7 +52,12 @@ function WallWithGaps({ axis, length, height, fixedPos, gaps = [], wallThickness
         return (
           <mesh key={i} position={pos} receiveShadow castShadow>
             <boxGeometry args={args} />
-            <meshStandardMaterial color={WALL_COLOR} roughness={0.85} />
+            <meshStandardMaterial
+              color={WALL_COLOR}
+              roughness={0.8}
+              metalness={0.05}
+              {...wallMaterialProps}
+            />
           </mesh>
         )
       })}
@@ -72,16 +77,27 @@ export default function RoomShell({
   doorGaps = {},
   floorColor = FLOOR_COLOR,
   ceilingColor = CEILING_COLOR,
+  floorMaterialProps = {},
+  wallMaterialProps = {},
 }) {
   const hw = width / 2
   const hd = depth / 2
 
   return (
     <group position={position}>
-      {/* Floor */}
+      {/* Floor — physical material for clearcoat reflections */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[width, depth]} />
-        <meshStandardMaterial color={floorColor} roughness={0.3} metalness={0.15} />
+        <meshPhysicalMaterial
+          color={floorColor}
+          roughness={0.2}
+          metalness={0.1}
+          clearcoat={0.3}
+          clearcoatRoughness={0.2}
+          reflectivity={0.5}
+          envMapIntensity={0.3}
+          {...floorMaterialProps}
+        />
       </mesh>
 
       {/* Ceiling */}
@@ -91,13 +107,13 @@ export default function RoomShell({
       </mesh>
 
       {/* North wall (far -Z) */}
-      <WallWithGaps axis="x" length={width} height={height} fixedPos={-hd} gaps={doorGaps.north} />
+      <WallWithGaps axis="x" length={width} height={height} fixedPos={-hd} gaps={doorGaps.north} wallMaterialProps={wallMaterialProps} />
       {/* South wall (near +Z) */}
-      <WallWithGaps axis="x" length={width} height={height} fixedPos={hd} gaps={doorGaps.south} />
+      <WallWithGaps axis="x" length={width} height={height} fixedPos={hd} gaps={doorGaps.south} wallMaterialProps={wallMaterialProps} />
       {/* West wall (-X) */}
-      <WallWithGaps axis="z" length={depth} height={height} fixedPos={-hw} gaps={doorGaps.west} />
+      <WallWithGaps axis="z" length={depth} height={height} fixedPos={-hw} gaps={doorGaps.west} wallMaterialProps={wallMaterialProps} />
       {/* East wall (+X) */}
-      <WallWithGaps axis="z" length={depth} height={height} fixedPos={hw} gaps={doorGaps.east} />
+      <WallWithGaps axis="z" length={depth} height={height} fixedPos={hw} gaps={doorGaps.east} wallMaterialProps={wallMaterialProps} />
     </group>
   )
 }

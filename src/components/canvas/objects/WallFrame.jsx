@@ -1,7 +1,5 @@
-import { useState, useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
-import { lerp } from '@/utils/helpers'
+import ProjectShowcase from './ProjectShowcase'
 
 const FRAME_WIDTH = 3
 const FRAME_HEIGHT = 2
@@ -9,30 +7,16 @@ const FRAME_BORDER = 0.12
 const FRAME_DEPTH = 0.08
 
 export default function WallFrame({ project, position, rotation, onClick, onHover }) {
-  const [hovered, setHovered] = useState(false)
-  const canvasRef = useRef()
-  const glowRef = useRef(0)
-
   const handlePointerOver = (e) => {
     e.stopPropagation()
-    setHovered(true)
     onHover?.(project.title)
     document.body.style.cursor = 'pointer'
   }
 
   const handlePointerOut = () => {
-    setHovered(false)
     onHover?.(null)
     document.body.style.cursor = 'auto'
   }
-
-  useFrame(() => {
-    const target = hovered ? 0.4 : 0.05
-    glowRef.current = lerp(glowRef.current, target, 0.08)
-    if (canvasRef.current) {
-      canvasRef.current.emissiveIntensity = glowRef.current
-    }
-  })
 
   return (
     <group position={position} rotation={rotation}>
@@ -57,23 +41,19 @@ export default function WallFrame({ project, position, rotation, onClick, onHove
         <meshStandardMaterial color="#2a1810" metalness={0.7} roughness={0.35} />
       </mesh>
 
-      {/* Canvas — interactive */}
-      <mesh
+      {/* Canvas — interactive with animated showcase */}
+      <group
         position={[0, 0, -0.01]}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
         onClick={(e) => { e.stopPropagation(); onClick?.(project) }}
       >
-        <planeGeometry args={[FRAME_WIDTH, FRAME_HEIGHT]} />
-        <meshStandardMaterial
-          ref={canvasRef}
-          color={project.color || '#1a1a2e'}
-          emissive={project.color || '#6366f1'}
-          emissiveIntensity={0.05}
-          roughness={0.5}
-          metalness={0.1}
+        <ProjectShowcase
+          color={project.color || '#6366f1'}
+          width={FRAME_WIDTH}
+          height={FRAME_HEIGHT}
         />
-      </mesh>
+      </group>
 
       {/* Project title */}
       <Text

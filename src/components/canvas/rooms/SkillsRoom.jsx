@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import RoomShell from './RoomBuilder'
 import { DOOR_WIDTH } from '../objects/Door'
 import { LOBBY } from './Lobby'
@@ -5,6 +6,7 @@ import MuseumSpotlight from '../objects/MuseumSpotlight'
 import Pedestal from '../objects/Pedestal'
 import { Text } from '@react-three/drei'
 import { skills } from '@/data/portfolio'
+import { createDarkStoneTexture, createConcreteNormalTexture } from '@/utils/proceduralTextures'
 
 const HALF_DOOR = DOOR_WIDTH / 2
 const PEDESTAL_RADIUS = 4
@@ -19,6 +21,16 @@ export const SKILLS = {
 
 export default function SkillsRoom({ onHover }) {
   const pedestalSkills = skills.slice(0, 8)
+  const floorTex = useMemo(() => {
+    const t = createDarkStoneTexture(512, 512)
+    t.repeat.set(3, 3)
+    return t
+  }, [])
+  const wallNormal = useMemo(() => {
+    const t = createConcreteNormalTexture(256, 256)
+    t.repeat.set(3, 2)
+    return t
+  }, [])
 
   return (
     <>
@@ -30,6 +42,8 @@ export default function SkillsRoom({ onHover }) {
         doorGaps={{
           south: [{ start: -HALF_DOOR, end: HALF_DOOR }],
         }}
+        floorMaterialProps={{ map: floorTex, color: '#ffffff', roughness: 0.12, metalness: 0.15 }}
+        wallMaterialProps={{ normalMap: wallNormal, normalScale: [0.3, 0.3] }}
       />
 
       {/* Room title */}

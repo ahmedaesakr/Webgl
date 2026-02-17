@@ -14,6 +14,7 @@ function App() {
   const [selectedProject, setSelectedProject] = useState(null)
   const [hoveredObject, setHoveredObject] = useState(null)
   const [showPause, setShowPause] = useState(false)
+  const [audioEnabled, setAudioEnabled] = useState(true)
   const hasEnteredRef = useRef(false)
 
   const handlePointerLockChange = useCallback((locked) => {
@@ -70,6 +71,8 @@ function App() {
             onRoomChange={setCurrentRoom}
             onSelectProject={handleSelectProject}
             onHover={setHoveredObject}
+            audioEnabled={audioEnabled}
+            currentRoom={currentRoom}
           />
         </Suspense>
       </Canvas>
@@ -86,7 +89,12 @@ function App() {
       )}
 
       {showPause && !selectedProject && (
-        <PauseMenu onResume={handleResume} onResetPosition={handleResetPosition} />
+        <PauseMenu
+          onResume={handleResume}
+          onResetPosition={handleResetPosition}
+          audioEnabled={audioEnabled}
+          onToggleAudio={() => setAudioEnabled(prev => !prev)}
+        />
       )}
     </div>
   )

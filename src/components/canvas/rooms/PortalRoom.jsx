@@ -1,9 +1,12 @@
+import { useMemo } from 'react'
 import RoomShell from './RoomBuilder'
 import { DOOR_WIDTH } from '../objects/Door'
 import { GALLERY } from './GalleryRoom'
 import Portal from '../objects/Portal'
-import { Text, Html } from '@react-three/drei'
+import ContactOrb from '../objects/ContactOrb'
+import { Text } from '@react-three/drei'
 import { contact } from '@/data/portfolio'
+import { createDarkStoneTexture, createConcreteNormalTexture } from '@/utils/proceduralTextures'
 
 const HALF_DOOR = DOOR_WIDTH / 2
 
@@ -16,13 +19,24 @@ export const PORTAL = {
 }
 
 const CONTACT_LINKS = [
-  { label: 'Email', href: `mailto:${contact.email}`, icon: '\u2709' },
-  { label: 'GitHub', href: contact.github, icon: '\u2B22' },
-  { label: 'LinkedIn', href: contact.linkedin, icon: 'in' },
-  { label: 'Twitter', href: contact.twitter, icon: '\u2B22' },
+  { label: 'Email', href: `mailto:${contact.email}`, color: '#06b6d4' },
+  { label: 'GitHub', href: contact.github, color: '#e2e8f0' },
+  { label: 'LinkedIn', href: contact.linkedin, color: '#3b82f6' },
+  { label: 'Twitter', href: contact.twitter, color: '#38bdf8' },
 ]
 
 export default function PortalRoom() {
+  const floorTex = useMemo(() => {
+    const t = createDarkStoneTexture(512, 512)
+    t.repeat.set(2, 2)
+    return t
+  }, [])
+  const wallNormal = useMemo(() => {
+    const t = createConcreteNormalTexture(256, 256)
+    t.repeat.set(3, 2)
+    return t
+  }, [])
+
   return (
     <>
       <RoomShell
@@ -33,6 +47,8 @@ export default function PortalRoom() {
         doorGaps={{
           north: [{ start: -HALF_DOOR, end: HALF_DOOR }],
         }}
+        floorMaterialProps={{ map: floorTex, color: '#ffffff', roughness: 0.12, metalness: 0.15 }}
+        wallMaterialProps={{ normalMap: wallNormal, normalScale: [0.3, 0.3] }}
       />
 
       {/* "Let's Connect" title */}
@@ -60,84 +76,22 @@ export default function PortalRoom() {
         radius={1.5}
       />
 
-      {/* Contact cards around portal */}
-      <Html
-        position={[PORTAL.x - 2.8, 2.5, PORTAL.z + 1]}
-        distanceFactor={4}
-        transform
-      >
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          fontFamily: 'system-ui, sans-serif',
-        }}>
-          {CONTACT_LINKS.slice(0, 2).map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                display: 'block',
-                padding: '10px 16px',
-                background: 'rgba(15, 23, 42, 0.85)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(139, 92, 246, 0.4)',
-                borderRadius: '8px',
-                color: '#e2e8f0',
-                textDecoration: 'none',
-                fontSize: '12px',
-                transition: 'border-color 0.3s',
-                minWidth: '120px',
-                textAlign: 'center',
-              }}
-            >
-              <span style={{ fontSize: '14px', marginRight: '6px' }}>{link.icon}</span>
-              {link.label}
-            </a>
-          ))}
-        </div>
-      </Html>
-
-      <Html
-        position={[PORTAL.x + 2.8, 2.5, PORTAL.z + 1]}
-        distanceFactor={4}
-        transform
-      >
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          fontFamily: 'system-ui, sans-serif',
-        }}>
-          {CONTACT_LINKS.slice(2).map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                display: 'block',
-                padding: '10px 16px',
-                background: 'rgba(15, 23, 42, 0.85)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(139, 92, 246, 0.4)',
-                borderRadius: '8px',
-                color: '#e2e8f0',
-                textDecoration: 'none',
-                fontSize: '12px',
-                transition: 'border-color 0.3s',
-                minWidth: '120px',
-                textAlign: 'center',
-              }}
-            >
-              <span style={{ fontSize: '14px', marginRight: '6px' }}>{link.icon}</span>
-              {link.label}
-            </a>
-          ))}
-        </div>
-      </Html>
+      {/* Contact orbs orbiting around the portal */}
+      {CONTACT_LINKS.map((link, i) => {
+        const angle = (i / CONTACT_LINKS.length) * Math.PI * 2
+        const orbRadius = 2.8
+        const x = PORTAL.x + Math.cos(angle) * orbRadius
+        const z = PORTAL.z + 1 + Math.sin(angle) * orbRadius
+        return (
+          <ContactOrb
+            key={link.label}
+            position={[x, 2.2 + (i % 2) * 0.5, z]}
+            label={link.label}
+            color={link.color}
+            href={link.href}
+          />
+        )
+      })}
 
       {/* Floor glow ring under portal */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[PORTAL.x, 0.01, PORTAL.z + 1]}>

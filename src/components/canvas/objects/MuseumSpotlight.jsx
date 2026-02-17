@@ -1,4 +1,5 @@
-import { useRef, useLayoutEffect } from 'react'
+import { useRef } from 'react'
+import { SpotLight } from '@react-three/drei'
 
 export default function MuseumSpotlight({
   position = [0, 4, 0],
@@ -8,31 +9,28 @@ export default function MuseumSpotlight({
   angle = 0.4,
   penumbra = 0.5,
   distance = 12,
+  castShadow = true,
+  debug = false,
 }) {
   const lightRef = useRef()
-  const targetRef = useRef()
-
-  useLayoutEffect(() => {
-    if (lightRef.current && targetRef.current) {
-      lightRef.current.target = targetRef.current
-    }
-  }, [])
 
   return (
-    <group>
-      <spotLight
-        ref={lightRef}
-        position={position}
-        color={color}
-        intensity={intensity}
-        angle={angle}
-        penumbra={penumbra}
-        distance={distance}
-        castShadow
-        shadow-mapSize={[512, 512]}
-        shadow-bias={-0.0001}
-      />
-      <object3D ref={targetRef} position={target} />
-    </group>
+    <SpotLight
+      ref={lightRef}
+      position={position}
+      target-position={target}
+      color={color}
+      intensity={intensity}
+      angle={angle}
+      penumbra={penumbra}
+      distance={distance}
+      castShadow={castShadow}
+      shadow-mapSize-width={512}
+      shadow-mapSize-height={512}
+      shadow-bias={-0.0001}
+      attenuation={5}
+      anglePower={4}
+      opacity={0.5} // Volumetric opacity
+    />
   )
 }

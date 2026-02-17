@@ -1,14 +1,28 @@
+import { useMemo } from 'react'
 import RoomShell from './RoomBuilder'
 import { DOOR_WIDTH } from '../objects/Door'
 import MuseumSpotlight from '../objects/MuseumSpotlight'
 import { Text, Float } from '@react-three/drei'
 import { personalInfo } from '@/data/portfolio'
+import { createMarbleTexture, createConcreteNormalTexture } from '@/utils/proceduralTextures'
+import DirectionSign from '../objects/DirectionSign'
 
 const HALF_DOOR = DOOR_WIDTH / 2
 
 export const LOBBY = { width: 14, depth: 14, height: 4, x: 0, z: 0 }
 
 export default function Lobby() {
+  const floorTex = useMemo(() => {
+    const t = createMarbleTexture(512, 512)
+    t.repeat.set(3, 3)
+    return t
+  }, [])
+  const wallNormal = useMemo(() => {
+    const t = createConcreteNormalTexture(256, 256)
+    t.repeat.set(4, 2)
+    return t
+  }, [])
+
   return (
     <>
       <RoomShell
@@ -21,6 +35,8 @@ export default function Lobby() {
           east: [{ start: -HALF_DOOR, end: HALF_DOOR }],
           west: [{ start: -HALF_DOOR, end: HALF_DOOR }],
         }}
+        floorMaterialProps={{ map: floorTex, color: '#ffffff', roughness: 0.15, metalness: 0.08 }}
+        wallMaterialProps={{ normalMap: wallNormal, normalScale: [0.3, 0.3] }}
       />
 
       {/* ── Welcome text ── */}
@@ -107,6 +123,39 @@ export default function Lobby() {
           opacity={0.4}
         />
       </mesh>
+
+      {/* ── Ceiling grid strips ── */}
+      {[-4, 0, 4].map((x) => (
+        <mesh key={`ceil-x-${x}`} position={[x, LOBBY.height - 0.01, 0]}>
+          <boxGeometry args={[0.04, 0.03, LOBBY.depth - 0.6]} />
+          <meshStandardMaterial color="#1a1a20" metalness={0.3} roughness={0.4} />
+        </mesh>
+      ))}
+      {[-4, 0, 4].map((z) => (
+        <mesh key={`ceil-z-${z}`} position={[0, LOBBY.height - 0.01, z]}>
+          <boxGeometry args={[LOBBY.width - 0.6, 0.03, 0.04]} />
+          <meshStandardMaterial color="#1a1a20" metalness={0.3} roughness={0.4} />
+        </mesh>
+      ))}
+
+      {/* ── Wayfinding signs above doorways ── */}
+      <DirectionSign
+        position={[LOBBY.width / 2 - 0.5, 3.2, 0]}
+        label="Gallery"
+        color="#6366f1"
+      />
+      <DirectionSign
+        position={[-LOBBY.width / 2 + 0.5, 3.2, 0]}
+        label="About"
+        rotation={[0, Math.PI, 0]}
+        color="#a855f7"
+      />
+      <DirectionSign
+        position={[0, 3.2, -LOBBY.depth / 2 + 0.5]}
+        label="Skills"
+        rotation={[0, Math.PI / 2, 0]}
+        color="#06b6d4"
+      />
 
       {/* ── Spotlights ── */}
       <MuseumSpotlight

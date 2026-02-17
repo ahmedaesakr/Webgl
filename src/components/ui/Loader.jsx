@@ -25,7 +25,15 @@ export default function Loader() {
   return (
     <div className={`loader-overlay ${!active ? 'loader-fade-out' : ''}`}>
       <div className="loader-content">
-        <h1 className="loader-title">Entering Museum...</h1>
+        <div className="loader-icon">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="#6366f1" strokeWidth="1.5">
+            <rect x="8" y="16" width="32" height="24" rx="2" />
+            <path d="M14 16V12a10 10 0 0 1 20 0v4" />
+            <line x1="24" y1="28" x2="24" y2="34" />
+          </svg>
+        </div>
+        <h1 className="loader-title">Ahmed Sakr</h1>
+        <p className="loader-subtitle">Building your experience...</p>
         <div className="loader-bar-track">
           <div
             className="loader-bar-fill"

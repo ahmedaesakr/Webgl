@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Text, Float } from '@react-three/drei'
 import { lerp } from '@/utils/helpers'
+import SkillOrbit from './SkillOrbit'
 
 const BASE_RADIUS = 0.35
 const BASE_HEIGHT = 0.8
@@ -77,6 +78,11 @@ export default function Pedestal({ skill, position, onHover }) {
           />
         </mesh>
       </Float>
+
+      {/* Orbiting mini shapes */}
+      <group position={[0, BASE_HEIGHT + 0.5, 0]}>
+        <SkillOrbit color={skill.color} count={4} radius={0.5} speed={0.8 + skill.level / 100} />
+      </group>
 
       {/* Point light from below orb */}
       <pointLight

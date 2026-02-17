@@ -27,6 +27,25 @@ export default function PlayerController({ onPointerLockChange, onRoomChange }) 
     return () => window.removeEventListener('resetPlayerPosition', handleReset)
   }, [camera])
 
+  // E-key interaction: simulate a click on the canvas so R3F raycasts from crosshair
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.code === 'KeyE' && isLocked) {
+        const rect = gl.domElement.getBoundingClientRect()
+        const cx = rect.left + rect.width / 2
+        const cy = rect.top + rect.height / 2
+        gl.domElement.dispatchEvent(new PointerEvent('pointerdown', {
+          clientX: cx, clientY: cy, bubbles: true,
+        }))
+        gl.domElement.dispatchEvent(new PointerEvent('pointerup', {
+          clientX: cx, clientY: cy, bubbles: true,
+        }))
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [gl.domElement, isLocked])
+
   useEffect(() => {
     const onPointerLockChangeInternal = () => {
       const locked = document.pointerLockElement === document.body

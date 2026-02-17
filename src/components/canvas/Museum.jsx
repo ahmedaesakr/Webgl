@@ -4,16 +4,19 @@ import AboutRoom, { ABOUT } from './rooms/AboutRoom'
 import SkillsRoom, { SKILLS } from './rooms/SkillsRoom'
 import PortalRoom, { PORTAL } from './rooms/PortalRoom'
 import Door from './objects/Door'
+import useRoomVisibility from '@/hooks/useRoomVisibility'
 
-export default function Museum({ onSelectProject, onHover }) {
+export default function Museum({ onSelectProject, onHover, currentRoom = 'LOBBY' }) {
+  const visible = useRoomVisibility(currentRoom)
+
   return (
     <group>
-      {/* Rooms */}
-      <Lobby />
-      <GalleryRoom onSelectProject={onSelectProject} onHover={onHover} />
-      <AboutRoom />
-      <SkillsRoom onHover={onHover} />
-      <PortalRoom onHover={onHover} />
+      {/* Rooms — only render content for nearby rooms */}
+      {visible.lobby && <Lobby />}
+      {visible.gallery && <GalleryRoom onSelectProject={onSelectProject} onHover={onHover} />}
+      {visible.about && <AboutRoom />}
+      {visible.skills && <SkillsRoom onHover={onHover} />}
+      {visible.portal && <PortalRoom onHover={onHover} />}
 
       {/* Door: Lobby → Gallery (east wall of lobby) */}
       <Door

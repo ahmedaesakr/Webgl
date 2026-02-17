@@ -2,10 +2,11 @@ import PlayerController from './PlayerController'
 import Particles from './Particles'
 import Museum from './Museum'
 import Effects from './Effects'
+import AmbientAudio from './AmbientAudio'
 import { AdaptiveDpr, AdaptiveEvents, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 
-export default function Experience({ onPointerLockChange, onRoomChange, onSelectProject, onHover }) {
+export default function Experience({ onPointerLockChange, onRoomChange, onSelectProject, onHover, audioEnabled = true, currentRoom = 'LOBBY' }) {
   return (
     <>
       <color attach="background" args={['#101015']} />
@@ -21,8 +22,9 @@ export default function Experience({ onPointerLockChange, onRoomChange, onSelect
       />
       <PlayerController onPointerLockChange={onPointerLockChange} onRoomChange={onRoomChange} />
       <Particles />
-      <Museum onSelectProject={onSelectProject} onHover={onHover} />
+      <Museum onSelectProject={onSelectProject} onHover={onHover} currentRoom={currentRoom} />
       <Effects />
+      <AmbientAudio enabled={audioEnabled} />
       <AdaptiveDpr pixelated />
       <AdaptiveEvents />
     </>

@@ -1,9 +1,11 @@
+import { useMemo } from 'react'
 import RoomShell from './RoomBuilder'
 import { DOOR_WIDTH } from '../objects/Door'
 import { LOBBY } from './Lobby'
 import MuseumSpotlight from '../objects/MuseumSpotlight'
 import { Text, Html, Float } from '@react-three/drei'
 import { personalInfo, bio, stats } from '@/data/portfolio'
+import { createMarbleTexture, createConcreteNormalTexture } from '@/utils/proceduralTextures'
 
 const HALF_DOOR = DOOR_WIDTH / 2
 
@@ -20,6 +22,17 @@ const NORTH_WALL_Z = ABOUT.z - ABOUT.depth / 2 + 0.16
 const SOUTH_WALL_Z = ABOUT.z + ABOUT.depth / 2 - 0.16
 
 export default function AboutRoom() {
+  const floorTex = useMemo(() => {
+    const t = createMarbleTexture(512, 512)
+    t.repeat.set(2, 2)
+    return t
+  }, [])
+  const wallNormal = useMemo(() => {
+    const t = createConcreteNormalTexture(256, 256)
+    t.repeat.set(3, 2)
+    return t
+  }, [])
+
   return (
     <>
       <RoomShell
@@ -30,6 +43,8 @@ export default function AboutRoom() {
         doorGaps={{
           east: [{ start: -HALF_DOOR, end: HALF_DOOR }],
         }}
+        floorMaterialProps={{ map: floorTex, color: '#ffffff', roughness: 0.15, metalness: 0.08 }}
+        wallMaterialProps={{ normalMap: wallNormal, normalScale: [0.3, 0.3] }}
       />
 
       {/* ── Portrait wall (west) ── */}

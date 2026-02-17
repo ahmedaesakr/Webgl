@@ -308,13 +308,29 @@ body {
   text-align: center;
 }
 
+.loader-icon {
+  margin-bottom: 16px;
+  animation: loaderPulse 2s ease-in-out infinite;
+}
+
 .loader-title {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
-  margin: 0 0 24px;
+  margin: 0 0 8px;
   color: var(--fg);
   letter-spacing: 0.04em;
+}
+
+.loader-subtitle {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+@keyframes loaderPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
 }
 
 .loader-bar-track {
@@ -401,6 +417,22 @@ body {
   margin: 16px 0 0;
   color: var(--muted);
   font-size: 0.8rem;
+}
+
+/* ─── Minimap ─────────────────────────────────────── */
+
+.minimap {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  padding: 8px;
+  border-radius: 10px;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+
+.minimap:hover {
+  opacity: 1;
 }
 
 /* ─── Skip to Content ─────────────────────────────── */
