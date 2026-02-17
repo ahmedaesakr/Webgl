@@ -72,7 +72,7 @@ function App() {
         </Suspense>
       </Canvas>
 
-      <Loader />
+      {/* <Loader /> */}
 
       <div className="ui-overlay">
         <HUD pointerLocked={pointerLocked} currentRoom={currentRoom} />
